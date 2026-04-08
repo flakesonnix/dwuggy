@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022. Isaak Hanimann.
+ * Copyright (c) 2024. Isaak Hanimann.
  * This file is part of PsychonautWiki Journal.
  *
  * PsychonautWiki Journal is free software: you can redistribute it and/or modify
@@ -18,26 +18,20 @@
 
 package com.isaakhanimann.journal.data.room.experiences.entities
 
-import androidx.compose.ui.graphics.Color
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import kotlinx.serialization.Serializable
+import androidx.room.TypeConverter
 
-@Entity
-@Serializable
-data class SubstanceCompanion(
-    @PrimaryKey(autoGenerate = false)
-    val substanceName: String,
-    var color: AdaptiveColor,
-    var customColorRed: Int? = null,
-    var customColorGreen: Int? = null,
-    var customColorBlue: Int? = null,
-) {
-    fun getComposeColor(isDarkTheme: Boolean): Color {
-        return if (color == AdaptiveColor.CUSTOM && customColorRed != null && customColorGreen != null && customColorBlue != null) {
-            Color(red = customColorRed, green = customColorGreen, blue = customColorBlue)
-        } else {
-            color.getComposeColor(isDarkTheme)
+class AdaptiveColorConverter {
+    @TypeConverter
+    fun fromColor(color: AdaptiveColor): String {
+        return color.name
+    }
+
+    @TypeConverter
+    fun toColor(value: String): AdaptiveColor {
+        return try {
+            AdaptiveColor.valueOf(value)
+        } catch (e: IllegalArgumentException) {
+            AdaptiveColor.BLUE
         }
     }
 }

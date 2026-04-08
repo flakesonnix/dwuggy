@@ -85,7 +85,7 @@ fun SubstanceColorsScreenPreview() {
 @Composable
 fun SubstanceColorsScreenContent(
     substanceCompanions: List<SubstanceCompanion>,
-    updateColor: (color: AdaptiveColor, substanceName: String) -> Unit,
+    updateColor: (color: AdaptiveColor, substanceName: String, customRed: Int?, customGreen: Int?, customBlue: Int?) -> Unit,
     alreadyUsedColors: List<AdaptiveColor>,
     otherColors: List<AdaptiveColor>
 ) {
@@ -112,10 +112,10 @@ fun SubstanceColorsScreenContent(
                         text = substanceCompanion.substanceName,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    ColorPicker(
-                        selectedColor = substanceCompanion.color,
-                        onChangeOfColor = {
-                            updateColor(it, substanceCompanion.substanceName)
+                    ColorPickerWithCustom(
+                        substanceCompanion = substanceCompanion,
+                        onColorChange = { newColor, customRed, customGreen, customBlue ->
+                            updateColor(newColor, substanceCompanion.substanceName, customRed, customGreen, customBlue)
                         },
                         alreadyUsedColors = alreadyUsedColors,
                         otherColors = otherColors
@@ -125,4 +125,27 @@ fun SubstanceColorsScreenContent(
             }
         }
     }
+}
+
+@Composable
+private fun ColorPickerWithCustom(
+    substanceCompanion: SubstanceCompanion,
+    onColorChange: (AdaptiveColor, customRed: Int?, customGreen: Int?, customBlue: Int?) -> Unit,
+    alreadyUsedColors: List<AdaptiveColor>,
+    otherColors: List<AdaptiveColor>
+) {
+    ColorPicker(
+        selectedColor = substanceCompanion.color,
+        onChangeOfColor = { newColor ->
+            onColorChange(newColor, null, null, null)
+        },
+        alreadyUsedColors = alreadyUsedColors,
+        otherColors = otherColors,
+        customRed = substanceCompanion.customColorRed,
+        customGreen = substanceCompanion.customColorGreen,
+        customBlue = substanceCompanion.customColorBlue,
+        onCustomColorPicked = { red, green, blue ->
+            onColorChange(AdaptiveColor.CUSTOM, red, green, blue)
+        }
+    )
 }

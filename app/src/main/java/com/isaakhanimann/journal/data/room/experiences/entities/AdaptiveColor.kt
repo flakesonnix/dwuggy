@@ -581,8 +581,15 @@ enum class AdaptiveColor {
         }
 
         override val isPreferred = false
+    },
+    CUSTOM {
+        override fun getComposeColor(isDarkTheme: Boolean): Color {
+            return Color.Gray
+        }
+
+        override val isPreferred = false
     };
 
     abstract fun getComposeColor(isDarkTheme: Boolean): Color
-    abstract val isPreferred: Boolean
+    open val isPreferred: Boolean
 }

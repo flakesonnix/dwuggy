@@ -52,18 +52,24 @@ class SubstanceColorsViewModel @Inject constructor(
         experienceRepository.deleteUnusedSubstanceCompanions()
     }
 
-    fun updateColor(color: AdaptiveColor, substanceName: String) {
+    fun updateColor(color: AdaptiveColor, substanceName: String, customRed: Int? = null, customGreen: Int? = null, customBlue: Int? = null) {
         viewModelScope.launch {
-            val updatedList = _substanceCompanionsFlow.value.map { companion ->
-                if (companion.substanceName == substanceName) {
-                    companion.copy(color = color).also {
-                        experienceRepository.update(it)
-                    }
-                } else {
-                    companion
+            val updatedCompanion = _substanceCompanionsFlow.value.find { it.substanceName == substanceName }
+            if (updatedCompanion != null) {
+                val newRed = if (color == AdaptiveColor.CUSTOM && customRed != null) customRed else null
+                val newGreen = if (color == AdaptiveColor.CUSTOM && customGreen != null) customGreen else null
+                val newBlue = if (color == AdaptiveColor.CUSTOM && customBlue != null) customBlue else null
+                val updated = updatedCompanion.copy(
+                    color = color,
+                    customColorRed = newRed,
+                    customColorGreen = newGreen,
+                    customColorBlue = newBlue
+                )
+                experienceRepository.update(updated)
+                _substanceCompanionsFlow.value = _substanceCompanionsFlow.value.map {
+                    if (it.substanceName == substanceName) updated else it
                 }
             }
-            _substanceCompanionsFlow.value = updatedList
         }
     }
 
