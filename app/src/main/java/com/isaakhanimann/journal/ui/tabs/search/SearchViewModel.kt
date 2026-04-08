@@ -81,8 +81,9 @@ class SearchViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000)
     )
 
-    val filteredSubstancesFlow = combine(searchTextFlow, filtersFlow, experienceRepo.getSortedLastUsedSubstanceNamesFlow(limit = 200)) { searchText, filters, recents ->
-        return@combine searchRepository.getMatchingSubstances(searchText = searchText, filterCategories = filters, recentlyUsedSubstanceNamesSorted = recents).map { it.toSubstanceModel() }
+    val filteredSubstancesFlow = combine(searchTextFlow, filtersFlow, experienceRepo.getSortedLastUsedSubstanceNamesFlow(limit = 200), experienceRepo.getAllSubstanceCompanionsFlow()) { searchText, filters, recents, companions ->
+        val blacklistedNames = companions.filter { it.isBlacklisted || it.isPaused() }.map { it.substanceName }.toSet()
+        return@combine searchRepository.getMatchingSubstances(searchText = searchText, filterCategories = filters, recentlyUsedSubstanceNamesSorted = recents).filter { it.name !in blacklistedNames }.map { it.toSubstanceModel() }
     }.stateIn(
         initialValue = emptyList(),
         scope = viewModelScope,

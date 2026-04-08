@@ -31,6 +31,7 @@ import com.isaakhanimann.journal.ui.tabs.settings.combinations.CombinationSettin
 import com.isaakhanimann.journal.ui.tabs.settings.customunits.CustomUnitsScreen
 import com.isaakhanimann.journal.ui.tabs.settings.customunits.archive.CustomUnitArchiveScreen
 import com.isaakhanimann.journal.ui.tabs.settings.customunits.edit.EditCustomUnitScreen
+import com.isaakhanimann.journal.ui.tabs.settings.pause.SubstancePauseScreen
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
@@ -51,6 +52,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
                 navigateToCustomUnits = {
                     navController.navigate(CustomUnitsRoute)
                 },
+                navigateToSubstancePause = {
+                    navController.navigate(SubstancePauseRoute)
+                },
                 navigateToDonate = {
                     navController.navigate(DonateRoute)
                 },
@@ -60,6 +64,7 @@ fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
         composableWithTransitions<DonateRoute> { DonateScreen() }
         composableWithTransitions<CombinationSettingsRoute> { CombinationSettingsScreen() }
         composableWithTransitions<SubstanceColorsRoute> { SubstanceColorsScreen() }
+        composableWithTransitions<SubstancePauseRoute> { SubstancePauseScreen(navigateBack = navController::popBackStack) }
         composableWithTransitions<CustomUnitArchiveRoute> {
             CustomUnitArchiveScreen(navigateToEditCustomUnit = { customUnitId ->
                 navController.navigate(EditCustomUnitRoute(customUnitId))
@@ -108,3 +113,6 @@ object CustomUnitsRoute
 
 @Serializable
 data class EditCustomUnitRoute(val customUnitId: Int)
+
+@Serializable
+object SubstancePauseRoute

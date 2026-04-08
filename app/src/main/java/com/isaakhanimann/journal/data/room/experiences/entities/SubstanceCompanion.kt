@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
+import java.time.Instant
 
 @Entity
 @Serializable
@@ -32,6 +33,8 @@ data class SubstanceCompanion(
     var customColorRed: Int? = null,
     var customColorGreen: Int? = null,
     var customColorBlue: Int? = null,
+    var isBlacklisted: Boolean = false,
+    var pauseEndDate: Instant? = null,
 ) {
     fun getComposeColor(isDarkTheme: Boolean): Color {
         return if (color == AdaptiveColor.CUSTOM && customColorRed != null && customColorGreen != null && customColorBlue != null) {
@@ -39,5 +42,9 @@ data class SubstanceCompanion(
         } else {
             color.getComposeColor(isDarkTheme)
         }
+    }
+
+    fun isPaused(): Boolean {
+        return pauseEndDate != null && pauseEndDate?.isAfter(Instant.now()) == true
     }
 }

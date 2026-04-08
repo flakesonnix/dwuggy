@@ -36,6 +36,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ContactSupport
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.FileDownload
@@ -93,6 +94,7 @@ fun SettingsPreview() {
         navigateToFAQ = {},
         navigateToComboSettings = {},
         navigateToSubstanceColors = {},
+        navigateToSubstancePause = {},
         navigateToCustomUnits = {},
         navigateToDonate = {},
         importFile = {},
@@ -113,6 +115,7 @@ fun SettingsScreen(
     navigateToFAQ: () -> Unit,
     navigateToComboSettings: () -> Unit,
     navigateToSubstanceColors: () -> Unit,
+    navigateToSubstancePause: () -> Unit,
     navigateToCustomUnits: () -> Unit,
     navigateToDonate: () -> Unit,
 ) {
@@ -120,6 +123,7 @@ fun SettingsScreen(
         navigateToFAQ = navigateToFAQ,
         navigateToComboSettings = navigateToComboSettings,
         navigateToSubstanceColors = navigateToSubstanceColors,
+        navigateToSubstancePause = navigateToSubstancePause,
         navigateToCustomUnits = navigateToCustomUnits,
         navigateToDonate = navigateToDonate,
         deleteEverything = viewModel::deleteEverything,
@@ -141,6 +145,7 @@ fun SettingsScreen(
     navigateToFAQ: () -> Unit,
     navigateToComboSettings: () -> Unit,
     navigateToSubstanceColors: () -> Unit,
+    navigateToSubstancePause: () -> Unit,
     navigateToCustomUnits: () -> Unit,
     navigateToDonate: () -> Unit,
     deleteEverything: () -> Unit,
@@ -182,6 +187,13 @@ fun SettingsScreen(
                     text = "Substance colors"
                 ) {
                     navigateToSubstanceColors()
+                }
+                HorizontalDivider()
+                SettingsButton(
+                    imageVector = Icons.Default.Block,
+                    text = "Pause & Blacklist"
+                ) {
+                    navigateToSubstancePause()
                 }
                 HorizontalDivider()
                 SettingsButton(

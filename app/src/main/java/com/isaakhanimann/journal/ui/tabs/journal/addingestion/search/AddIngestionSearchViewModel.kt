@@ -60,13 +60,15 @@ class AddIngestionSearchViewModel @Inject constructor(
 
     val filteredSubstancesFlow = combine(
         searchTextFlow,
-        experienceRepo.getSortedLastUsedSubstanceNamesFlow(limit = 200)
-    ) { searchText, recents ->
+        experienceRepo.getSortedLastUsedSubstanceNamesFlow(limit = 200),
+        experienceRepo.getAllSubstanceCompanionsFlow()
+    ) { searchText, recents, companions ->
+        val blacklistedNames = companions.filter { it.isBlacklisted || it.isPaused() }.map { it.substanceName }.toSet()
         return@combine searchRepo.getMatchingSubstances(
             searchText = searchText,
             filterCategories = emptyList(),
             recentlyUsedSubstanceNamesSorted = recents
-        ).map { it.toSubstanceModel() }
+        ).filter { it.name !in blacklistedNames }.map { it.toSubstanceModel() }
     }.stateIn(
         initialValue = emptyList(),
         scope = viewModelScope,
