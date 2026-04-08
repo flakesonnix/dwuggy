@@ -29,6 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -42,6 +46,9 @@ fun AddCustomSubstanceScreen(
     LaunchedEffect(Unit) {
         viewModel.name = initialName
     }
+
+    var isAdvancedMode by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Add custom substance") })
@@ -66,14 +73,40 @@ fun AddCustomSubstanceScreen(
             }
         }
     ) { padding ->
-        AddOrEditCustomSubstanceContent(
+        AddOrEditCustomSubstanceAdvancedContent(
             padding = padding,
             name = viewModel.name,
-            units = viewModel.units,
-            description = viewModel.description,
             onNameChange = { viewModel.name = it },
+            units = viewModel.units,
             onUnitsChange = { viewModel.units = it },
+            description = viewModel.description,
             onDescriptionChange = { viewModel.description = it },
+            commonNames = viewModel.commonNames,
+            onCommonNamesChange = { viewModel.commonNames = it },
+            categories = viewModel.categories,
+            onCategoriesChange = { viewModel.categories = it },
+            tolerance = viewModel.tolerance,
+            onToleranceChange = { viewModel.tolerance = it },
+            addictionPotential = viewModel.addictionPotential,
+            onAddictionPotentialChange = { viewModel.addictionPotential = it },
+            summary = viewModel.summary,
+            onSummaryChange = { viewModel.summary = it },
+            effectsSummary = viewModel.effectsSummary,
+            onEffectsSummaryChange = { viewModel.effectsSummary = it },
+            dosageRemark = viewModel.dosageRemark,
+            onDosageRemarkChange = { viewModel.dosageRemark = it },
+            generalRisks = viewModel.generalRisks,
+            onGeneralRisksChange = { viewModel.generalRisks = it },
+            longtermRisks = viewModel.longtermRisks,
+            onLongtermRisksChange = { viewModel.longtermRisks = it },
+            saferUse = viewModel.saferUse,
+            onSaferUseChange = { viewModel.saferUse = it },
+            customRoas = emptyList(),
+            onAddRoa = {},
+            onUpdateRoa = { _, _ -> },
+            onRemoveRoa = {},
+            isAdvancedMode = isAdvancedMode,
+            onToggleAdvanced = { isAdvancedMode = !isAdvancedMode }
         )
     }
 }

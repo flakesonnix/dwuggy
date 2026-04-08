@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022. Isaak Hanimann.
+ * Copyright (c) 2024. Isaak Hanimann.
  * This file is part of PsychonautWiki Journal.
  *
  * PsychonautWiki Journal is free software: you can redistribute it and/or modify
@@ -27,6 +27,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.isaakhanimann.journal.data.room.experiences.ExperienceRepository
 import com.isaakhanimann.journal.data.room.experiences.entities.CustomSubstance
+import com.isaakhanimann.journal.data.substances.classes.roa.CustomRoa
+import com.isaakhanimann.journal.data.substances.classes.roa.CustomRoaParser
 import com.isaakhanimann.journal.ui.main.navigation.graphs.EditCustomSubstanceRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
@@ -43,6 +45,17 @@ class EditCustomSubstanceViewModel @Inject constructor(
     var name by mutableStateOf("")
     var units by mutableStateOf("")
     var description by mutableStateOf("")
+    var commonNames by mutableStateOf("")
+    var categories by mutableStateOf("")
+    var tolerance by mutableStateOf("")
+    var addictionPotential by mutableStateOf("")
+    var summary by mutableStateOf("")
+    var effectsSummary by mutableStateOf("")
+    var dosageRemark by mutableStateOf("")
+    var generalRisks by mutableStateOf("")
+    var longtermRisks by mutableStateOf("")
+    var saferUse by mutableStateOf("")
+    var customRoas by mutableStateOf<List<CustomRoa>>(emptyList())
 
     val isValid get() = name.isNotBlank() && units.isNotBlank()
 
@@ -56,16 +69,38 @@ class EditCustomSubstanceViewModel @Inject constructor(
             name = customSubstance.name
             units = customSubstance.units
             description = customSubstance.description
+            commonNames = customSubstance.commonNames
+            categories = customSubstance.categories
+            tolerance = customSubstance.tolerance ?: ""
+            addictionPotential = customSubstance.addictionPotential ?: ""
+            summary = customSubstance.summary ?: ""
+            effectsSummary = customSubstance.effectsSummary ?: ""
+            dosageRemark = customSubstance.dosageRemark ?: ""
+            generalRisks = customSubstance.generalRisks ?: ""
+            longtermRisks = customSubstance.longtermRisks ?: ""
+            saferUse = customSubstance.saferUse
+            customRoas = CustomRoaParser.fromJson(customSubstance.roasJson)
         }
     }
 
     fun onDoneTap() {
         viewModelScope.launch {
             val customSubstance = CustomSubstance(
-                id,
-                name,
-                units,
-                description
+                id = id,
+                name = name,
+                units = units,
+                description = description,
+                commonNames = commonNames,
+                categories = categories,
+                tolerance = tolerance.ifBlank { null },
+                addictionPotential = addictionPotential.ifBlank { null },
+                summary = summary.ifBlank { null },
+                effectsSummary = effectsSummary.ifBlank { null },
+                dosageRemark = dosageRemark.ifBlank { null },
+                generalRisks = generalRisks.ifBlank { null },
+                longtermRisks = longtermRisks.ifBlank { null },
+                saferUse = saferUse,
+                roasJson = CustomRoaParser.toJson(customRoas)
             )
             experienceRepo.insert(customSubstance)
         }
@@ -75,5 +110,17 @@ class EditCustomSubstanceViewModel @Inject constructor(
         viewModelScope.launch {
             experienceRepo.delete(CustomSubstance(id, name, units, description))
         }
+    }
+
+    fun addRoa(roa: CustomRoa) {
+        customRoas = customRoas + roa
+    }
+
+    fun updateRoa(index: Int, roa: CustomRoa) {
+        customRoas = customRoas.toMutableList().also { it[index] = roa }
+    }
+
+    fun removeRoa(index: Int) {
+        customRoas = customRoas.toMutableList().also { it.removeAt(index) }
     }
 }

@@ -46,6 +46,8 @@ fun EditCustomSubstanceScreen(
     navigateBack: () -> Unit,
     viewModel: EditCustomSubstanceViewModel = hiltViewModel()
 ) {
+    var isAdvancedMode by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Edit custom substance") }, actions = {
@@ -105,14 +107,40 @@ fun EditCustomSubstanceScreen(
             }
         }
     ) { padding ->
-        AddOrEditCustomSubstanceContent(
+        AddOrEditCustomSubstanceAdvancedContent(
             padding = padding,
             name = viewModel.name,
-            units = viewModel.units,
-            description = viewModel.description,
             onNameChange = { viewModel.name = it },
+            units = viewModel.units,
             onUnitsChange = { viewModel.units = it },
-            onDescriptionChange = { viewModel.description = it }
+            description = viewModel.description,
+            onDescriptionChange = { viewModel.description = it },
+            commonNames = viewModel.commonNames,
+            onCommonNamesChange = { viewModel.commonNames = it },
+            categories = viewModel.categories,
+            onCategoriesChange = { viewModel.categories = it },
+            tolerance = viewModel.tolerance,
+            onToleranceChange = { viewModel.tolerance = it },
+            addictionPotential = viewModel.addictionPotential,
+            onAddictionPotentialChange = { viewModel.addictionPotential = it },
+            summary = viewModel.summary,
+            onSummaryChange = { viewModel.summary = it },
+            effectsSummary = viewModel.effectsSummary,
+            onEffectsSummaryChange = { viewModel.effectsSummary = it },
+            dosageRemark = viewModel.dosageRemark,
+            onDosageRemarkChange = { viewModel.dosageRemark = it },
+            generalRisks = viewModel.generalRisks,
+            onGeneralRisksChange = { viewModel.generalRisks = it },
+            longtermRisks = viewModel.longtermRisks,
+            onLongtermRisksChange = { viewModel.longtermRisks = it },
+            saferUse = viewModel.saferUse,
+            onSaferUseChange = { viewModel.saferUse = it },
+            customRoas = viewModel.customRoas,
+            onAddRoa = { viewModel.addRoa(it) },
+            onUpdateRoa = { index, roa -> viewModel.updateRoa(index, roa) },
+            onRemoveRoa = { index -> viewModel.removeRoa(index) },
+            isAdvancedMode = isAdvancedMode,
+            onToggleAdvanced = { isAdvancedMode = !isAdvancedMode }
         )
     }
 }

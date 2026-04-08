@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022. Isaak Hanimann.
+ * Copyright (c) 2024. Isaak Hanimann.
  * This file is part of PsychonautWiki Journal.
  *
  * PsychonautWiki Journal is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.isaakhanimann.journal.data.room.experiences.ExperienceRepository
 import com.isaakhanimann.journal.data.room.experiences.entities.CustomSubstance
+import com.isaakhanimann.journal.data.substances.classes.roa.CustomRoaParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,6 +38,16 @@ class AddCustomSubstanceViewModel @Inject constructor(
     var name by mutableStateOf("")
     var units by mutableStateOf("")
     var description by mutableStateOf("")
+    var commonNames by mutableStateOf("")
+    var categories by mutableStateOf("")
+    var tolerance by mutableStateOf("")
+    var addictionPotential by mutableStateOf("")
+    var summary by mutableStateOf("")
+    var effectsSummary by mutableStateOf("")
+    var dosageRemark by mutableStateOf("")
+    var generalRisks by mutableStateOf("")
+    var longtermRisks by mutableStateOf("")
+    var saferUse by mutableStateOf("")
 
     val isValid get() = name.isNotBlank() && units.isNotBlank()
 
@@ -45,7 +56,17 @@ class AddCustomSubstanceViewModel @Inject constructor(
             val customSubstance = CustomSubstance(
                 name = name,
                 units = units,
-                description = description
+                description = description,
+                commonNames = commonNames,
+                categories = categories,
+                tolerance = tolerance.ifBlank { null },
+                addictionPotential = addictionPotential.ifBlank { null },
+                summary = summary.ifBlank { null },
+                effectsSummary = effectsSummary.ifBlank { null },
+                dosageRemark = dosageRemark.ifBlank { null },
+                generalRisks = generalRisks.ifBlank { null },
+                longtermRisks = longtermRisks.ifBlank { null },
+                saferUse = saferUse,
             )
             experienceRepo.insert(customSubstance)
             onDone(name)

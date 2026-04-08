@@ -22,6 +22,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.isaakhanimann.journal.ui.tabs.journal.experience.components.SavedTimeDisplayOption
@@ -30,6 +31,10 @@ import kotlinx.coroutines.flow.map
 import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
+
+enum class Gender {
+    MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY
+}
 
 @Singleton
 class UserPreferences @Inject constructor(private val dataStore: DataStore<Preferences>) {
@@ -46,6 +51,10 @@ class UserPreferences @Inject constructor(private val dataStore: DataStore<Prefe
         val KEY_HIDE_DOSAGE_DOTS = booleanPreferencesKey("key_hide_dosage_dots")
         val KEY_ARE_SUBSTANCE_HEIGHTS_INDEPENDENT = booleanPreferencesKey("KEY_ARE_SUBSTANCE_HEIGHTS_INDEPENDENT")
         val KEY_IS_TIMELINE_HIDDEN = booleanPreferencesKey("KEY_IS_TIMELINE_HIDDEN")
+
+        val KEY_USER_WEIGHT_KG = intPreferencesKey("KEY_USER_WEIGHT_KG")
+        val KEY_USER_GENDER = stringPreferencesKey("KEY_USER_GENDER")
+        val KEY_USER_WEIGHT_ESTIMATED = booleanPreferencesKey("KEY_USER_WEIGHT_ESTIMATED")
     }
 
     suspend fun saveTimeDisplayOption(value: SavedTimeDisplayOption) {
@@ -135,5 +144,48 @@ class UserPreferences @Inject constructor(private val dataStore: DataStore<Prefe
             preferences[PreferencesKeys.KEY_IS_TIMELINE_HIDDEN] = value
         }
     }
+
+    suspend fun saveWeight(value: Int?) {
+        dataStore.edit { preferences ->
+            if (value != null) {
+                preferences[PreferencesKeys.KEY_USER_WEIGHT_KG] = value
+            } else {
+                preferences.remove(PreferencesKeys.KEY_USER_WEIGHT_KG)
+            }
+        }
+    }
+
+    val weightKgFlow: Flow<Int?> = dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.KEY_USER_WEIGHT_KG]
+        }
+
+    suspend fun saveGender(value: Gender?) {
+        dataStore.edit { preferences ->
+            if (value != null) {
+                preferences[PreferencesKeys.KEY_USER_GENDER] = value.name
+            } else {
+                preferences.remove(PreferencesKeys.KEY_USER_GENDER)
+            }
+        }
+    }
+
+    val genderFlow: Flow<Gender?> = dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.KEY_USER_GENDER]?.let {
+                try { Gender.valueOf(it) } catch (e: Exception) { null }
+            }
+        }
+
+    suspend fun saveWeightEstimated(value: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.KEY_USER_WEIGHT_ESTIMATED] = value
+        }
+    }
+
+    val isWeightEstimatedFlow: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.KEY_USER_WEIGHT_ESTIMATED] ?: false
+        }
 }
 
