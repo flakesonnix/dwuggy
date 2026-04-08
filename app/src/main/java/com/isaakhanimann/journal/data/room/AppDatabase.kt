@@ -27,12 +27,15 @@ import com.isaakhanimann.journal.data.room.experiences.entities.CustomSubstance
 import com.isaakhanimann.journal.data.room.experiences.entities.CustomUnit
 import com.isaakhanimann.journal.data.room.experiences.entities.Experience
 import com.isaakhanimann.journal.data.room.experiences.entities.Ingestion
+import com.isaakhanimann.journal.data.room.experiences.entities.ShulginRating
+import com.isaakhanimann.journal.data.room.experiences.entities.SubstanceCompanion
+import com.isaakhanimann.journal.data.room.experiences.entities.TimedNote
 import com.isaakhanimann.journal.data.room.experiences.entities.AdaptiveColorConverter
 import com.isaakhanimann.journal.data.room.experiences.entities.InstantConverter
 
 @TypeConverters(InstantConverter::class, AdaptiveColorConverter::class)
 @Database(
-    version = 10,
+    version = 9,
     entities = [Experience::class, Ingestion::class, SubstanceCompanion::class, CustomSubstance::class, ShulginRating::class, TimedNote::class, CustomUnit::class],
     autoMigrations = [
         AutoMigration (from = 1, to = 2),
@@ -43,7 +46,6 @@ import com.isaakhanimann.journal.data.room.experiences.entities.InstantConverter
         AutoMigration (from = 6, to = 7),
         AutoMigration (from = 7, to = 8),
         AutoMigration (from = 8, to = 9),
-        AutoMigration (from = 9, to = 10),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -456,7 +456,8 @@ fun SettingsScreen(
     }
 }
 
-const val SHARE_APP_URL = "https://psychonautwiki.org/wiki/PsychonautWiki_Journal"
+const val APP_NAME = "Dwuggy"
+const val SHARE_APP_URL = "https://github.com/dwuggy/dwuggy"
 
 
 @Composable
